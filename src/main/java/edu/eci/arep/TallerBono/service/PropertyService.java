@@ -30,7 +30,7 @@ public class PropertyService {
         return property.orElseThrow(() -> new IllegalArgumentException("Property con ID " + propertyId + " no existe"));
     }
 
-    public void eliminarProperty(Long propertyId) {
+    public boolean eliminarProperty(Long propertyId) {
         // Verifica si el ID del property es nulo o vacío
         if (propertyId == null) {
             throw new IllegalArgumentException("El ID de la tarea no puede ser nulo o vacío");
@@ -44,14 +44,16 @@ public class PropertyService {
 
         // Procedemos a eliminarlo
         propertyPersistence.deleteById(propertyId);
+
+        return true;
     }
 
-    public void actualizarProperty(Long propertyId, Property nuevoProperty) {
+    public Property actualizarProperty(Long propertyId, Property nuevoProperty) {
         Property property = obtenerProperty(propertyId);
         property.setAddress(nuevoProperty.getAddress());
-        property.setPrice(nuevoProperty.getAddress());
-        property.setSize(nuevoProperty.getAddress());
+        property.setPrice(nuevoProperty.getPrice());
+        property.setSize(nuevoProperty.getSize());
         property.setDescription(nuevoProperty.getDescription());
-        propertyPersistence.save(property);
+        return propertyPersistence.save(property);
     }
 }

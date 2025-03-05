@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PropertyPersistence extends JpaRepository<Property, Long> {
-    Property save(Property tarea);
-    Optional<Property> findById(Long id);
-    List<Property> findAll();
-    void deleteById(Long id);
+//    Property save(Property tarea);
+//    Optional<Property> findById(Long id);
+//    List<Property> findAll();
+//    void deleteById(Long id);
 }
