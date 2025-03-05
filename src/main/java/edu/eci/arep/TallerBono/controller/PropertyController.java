@@ -18,8 +18,8 @@ public class PropertyController {
     }
 
     @PostMapping
-    public ResponseEntity<Property> crearProperty(@RequestBody Property property) {
-        Property propertyCreated = propertyService.crear(property);
+    public ResponseEntity<Property> createProperty(@RequestBody Property property) {
+        Property propertyCreated = propertyService.create(property);
         if (propertyCreated == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Si no creó la property, devuelve 204 No Content
         }
@@ -27,8 +27,8 @@ public class PropertyController {
     }
 
     @GetMapping("/consult")
-    public ResponseEntity<List<Property>> consultarProperties() {
-        List<Property> properties = propertyService.obtenerProperties(); // Obtiene la lista de properties
+    public ResponseEntity<List<Property>> getProperties() {
+        List<Property> properties = propertyService.getProperties(); // Obtiene la lista de properties
         if (properties.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Si no hay properties, devuelve 204 No Content
         }
@@ -36,8 +36,8 @@ public class PropertyController {
     }
 
     @GetMapping("/consult/{propertyId}")
-    public ResponseEntity<Property> consultarProperty(@PathVariable Long propertyId) {
-        Property property = propertyService.obtenerProperty(propertyId);
+    public ResponseEntity<Property> getProperty(@PathVariable Long propertyId) {
+        Property property = propertyService.getProperty(propertyId);
         if (property == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Si no está la property, devuelve 404 Not Found
         }
@@ -45,9 +45,9 @@ public class PropertyController {
     }
 
     @DeleteMapping("/delete/{propertyId}")
-    public ResponseEntity<Void> eliminarProperty(@PathVariable Long propertyId) {
+    public ResponseEntity<Void> deleteProperty(@PathVariable Long propertyId) {
         try {
-            propertyService.eliminarProperty(propertyId);
+            propertyService.deleteProperty(propertyId);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
@@ -55,8 +55,8 @@ public class PropertyController {
     }
 
     @PutMapping("/update/{propertyId}")
-    public ResponseEntity<Property> actualizarProperty(@PathVariable Long propertyId, @RequestBody Property nuevaProperty) {
-        Property property = propertyService.actualizarProperty(propertyId,nuevaProperty);
+    public ResponseEntity<Property> updateProperty(@PathVariable Long propertyId, @RequestBody Property nuevaProperty) {
+        Property property = propertyService.updateProperty(propertyId,nuevaProperty);
         if (property == null) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED); // Si no actualizó la property, devuelve 204 No Content
         }
