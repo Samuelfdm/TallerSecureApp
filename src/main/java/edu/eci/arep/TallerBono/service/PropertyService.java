@@ -4,6 +4,8 @@ import edu.eci.arep.TallerBono.model.Property;
 import edu.eci.arep.TallerBono.repository.PropertyPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,7 @@ public class PropertyService {
         return property.orElseThrow(() -> new IllegalArgumentException("Property con ID " + propertyId + " no existe"));
     }
 
+    @Transactional
     public void deleteProperty(Long propertyId) {
         // Verifica si el ID del property es nulo o vacío
         if (propertyId == null) {

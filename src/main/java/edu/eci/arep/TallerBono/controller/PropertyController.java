@@ -26,7 +26,7 @@ public class PropertyController {
         return new ResponseEntity<>(propertyCreated, HttpStatus.CREATED); //Devuelve la property con 200 OK
     }
 
-    @GetMapping("/consult")
+    @GetMapping
     public ResponseEntity<List<Property>> getProperties() {
         List<Property> properties = propertyService.getProperties(); // Obtiene la lista de properties
         if (properties.isEmpty()) {
@@ -35,7 +35,7 @@ public class PropertyController {
         return new ResponseEntity<>(properties, HttpStatus.OK); // Devuelve la lista de properties con 200 OK
     }
 
-    @GetMapping("/consult/{propertyId}")
+    @GetMapping("/{propertyId}")
     public ResponseEntity<Property> getProperty(@PathVariable Long propertyId) {
         Property property = propertyService.getProperty(propertyId);
         if (property == null) {
@@ -44,7 +44,7 @@ public class PropertyController {
         return new ResponseEntity<>(property, HttpStatus.OK); //Devuelve la property con 200 OK
     }
 
-    @DeleteMapping("/delete/{propertyId}")
+    @DeleteMapping("/{propertyId}")
     public ResponseEntity<Void> deleteProperty(@PathVariable Long propertyId) {
         try {
             propertyService.deleteProperty(propertyId);
@@ -54,7 +54,7 @@ public class PropertyController {
         }
     }
 
-    @PutMapping("/update/{propertyId}")
+    @PutMapping("/{propertyId}")
     public ResponseEntity<Property> updateProperty(@PathVariable Long propertyId, @RequestBody Property nuevaProperty) {
         Property property = propertyService.updateProperty(propertyId,nuevaProperty);
         if (property == null) {

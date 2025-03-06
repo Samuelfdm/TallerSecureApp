@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        form { margin-bottom: 20px; }
+        input, button { margin: 5px; padding: 8px; }
+        .property { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+<h2>Add Property</h2>
+<form id="propertyForm">
+    <input type="text" id="address" placeholder="Address" required>
+    <input type="number" id="price" placeholder="Price" required>
+    <input type="number" id="size" placeholder="Size (sqft)" required>
+    <input type="text" id="description" placeholder="Description" required>
+    <button type="submit">Add Property</button>
+</form>
+
+<h2>Property List</h2>
+<div id="propertyList"></div>
+
+<script>
+    const API_URL = 'http://localhost:8080/properties';
+
+    document.getElementById('propertyForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const property = {
+            address: document.getElementById('address').value,
+            price: parseFloat(document.getElementById('price').value),
+            size: parseInt(document.getElementById('size').value),
+            description: document.getElementById('description').value
+        };
+
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(property)
+        });
+
+        if (response.ok) {
+            loadProperties();
+            document.getElementById('propertyForm').reset();
+        } else {
+            alert('Error adding property');
+        }
+    });
+
+    async function loadProperties() {
+        const response = await fetch(API_URL);
+        const properties = await response.json();
+        const list = document.getElementById('propertyList');
+        list.innerHTML = '';
+        properties.forEach(property => {
+            const div = document.createElement('div');
+            div.className = 'property';
+            div.innerHTML = `
+                    <strong>${property.address}</strong> - $${property.price} - ${property.size} sqft
+                    <p>${property.description}</p>
+                    <button onclick="updateProperty('${property.id}')">Update</button>
+                    <button onclick="deleteProperty('${property.id}')">Delete</button>
+                `;
+            list.appendChild(div);
+        });
+    }
+
+    async function deleteProperty(id) {
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        loadProperties();
+    }
+
+    async function updateProperty(id) {
+        const newPrice = prompt('Enter new price:');
+        if (newPrice) {
+            await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ price: parseFloat(newPrice) })
+            });
+            loadProperties();
+        }
+    }
+
+    loadProperties();
+</script>
+</body>
+</html>
