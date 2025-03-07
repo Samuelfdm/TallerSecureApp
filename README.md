@@ -102,44 +102,44 @@ The backend application follows a layered architecture with clear separation of 
                       +------------------------------------+
 ```
 
-#### Modelo de dominio
+# Modelo de dominio
 
-## Property (Entidad): Clase principal que representa una propiedad inmobiliaria.
+### Property (Entidad): Clase principal que representa una propiedad inmobiliaria.
 
-Atributos: id, address, price, size, description
+- Atributos: id, address, price, size, description
 Anotada con @Entity y @Id, @GeneratedValue para el identificador
 
-### Capa de persistencia
+## Capa de persistencia
 
-## PropertyPersistence (Interfaz): Define las operaciones de acceso a datos.
+### PropertyPersistence (Interfaz): Define las operaciones de acceso a datos.
 
-Métodos: findAll, findById, save, deleteById, findByAddressContainingOrDescriptionContaining
+- Métodos: findAll, findById, save, deleteById, findByAddressContainingOrDescriptionContaining
 Soporta paginación a través de parámetros Pageable
 
-## JpaPropertyRepository: Implementación JPA de la interfaz PropertyPersistence.
+### JpaPropertyRepository: Implementación JPA de la interfaz PropertyPersistence.
 
-Extiende JpaRepository de Spring Data
+- Extiende JpaRepository de Spring Data
 Usa consultas personalizadas con anotaciones @Query
 Anotada con @Repository("jpa")
 
-## InMemoryPropertyRepository: Implementación alternativa en memoria para pruebas.
+### InMemoryPropertyRepository: Implementación alternativa en memoria para pruebas.
 
-Mantiene una lista de propiedades y un contador de ID
+- Mantiene una lista de propiedades y un contador de ID
 Anotada con @Repository("memory")
 
-### Capa de servicio
+## Capa de servicio
 
-## PropertyService: Contiene la lógica de negocio.
+### PropertyService: Contiene la lógica de negocio.
 
-Depende de PropertyPersistence (inyección de dependencias)
+- Depende de PropertyPersistence (inyección de dependencias)
 Proporciona métodos para todas las operaciones CRUD
 Anotada con @Service
 
-### Capa de controlador
+## Capa de controlador
 
-## PropertyController: Maneja las peticiones HTTP REST.
+### PropertyController: Maneja las peticiones HTTP REST.
 
-Depende de PropertyService (inyección de dependencias)
+- Depende de PropertyService (inyección de dependencias)
 Expone endpoints para todas las operaciones CRUD
 Incluye funcionalidad de búsqueda y paginación
 Anotada con @RestController
@@ -172,24 +172,29 @@ Anotada con @RestController
 4. **Access the application**
    - http://localhost:8080/
 
+![img.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg.png)
+
+![img_1.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_1.png)
+
+![img_3.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_3.png)
+
 ### AWS Deployment
 
 1. **Create EC2 Instances**
    - Create two EC2 instances using Amazon Linux 2 AMI:
-      - property-backend-server (t2.micro)
-      - property-db-server (t2.micro)
+      - backendCrud (t2.micro)
+      - mysqlbdd (t2.micro)
    - Configure security groups:
       - Backend: Allow inbound traffic on ports 22 (SSH), 8080 (HTTP), and 80 (HTTP)
       - Database: Allow inbound traffic on ports 22 (SSH) and 3306 (MySQL) from the backend server IP only
 
 2. **Install Docker on both EC2 instances**
    ```bash
-   ssh -i "your-key.pem" ec2-user@your-instance-public-ip
    sudo yum update -y
-   sudo amazon-linux-extras install docker -y
+   sudo yum install docker
    sudo service docker start
    sudo usermod -a -G docker ec2-user
-   sudo systemctl enable docker
+   exit
    ```
    Log out and log back in to apply the group changes.
 
@@ -199,143 +204,55 @@ Anotada con @RestController
    docker run --name mysqlcontainer -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=properties -e MYSQL_USER=samuel -e MYSQL_PASSWORD=samuelpass -p 3306:3306 -d mysql:latest
    ```
 
+![img_6.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_6.png)
+
 4. **Deploy the backend on the application EC2 instance**
    ```bash
    # On the application EC2 instance
    # Clone your repository
-   git clone https://github.com/your-username/property-management.git
-   cd property-management
-   
-   # Update the application.properties file with the correct database IP
-   sed -i 's/localhost/your-db-instance-private-ip/g' src/main/resources/application.properties
-   
-   # Build the application
-   ./mvnw clean package
-   
-   # Build and run the Docker container
-   docker build -t property-backend .
-   docker run -d -p 8080:8080 --name property-backend property-backend
+   docker pull samuelfdm/tallermysqlrepo
+   docker run -d -p 8080:8080 --name propertiescontainer samuelfdm/tallermysqlrepo
    ```
+![img_9.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_9.png)
 
-5. **Deploy the frontend**
-   - Option 1: Use the backend EC2 instance to serve static files
-     ```bash
-     # On the backend EC2 instance
-     sudo amazon-linux-extras install nginx1 -y
-     sudo systemctl start nginx
-     sudo systemctl enable nginx
-     
-     # Copy frontend files to nginx
-     sudo mkdir -p /usr/share/nginx/html/property-management
-     sudo cp -r frontend/* /usr/share/nginx/html/property-management/
-     
-     # Update the API_URL in app.js to point to the backend
-     sudo sed -i 's|http://localhost:8080/properties|http://your-backend-instance-public-ip:8080/properties|g' /usr/share/nginx/html/property-management/scripts/app.js
-     ```
+![img_10.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_10.png)
 
-   - Option 2: Use Amazon S3 for hosting
-     ```bash
-     # Configure S3 bucket for static website hosting
-     aws s3 mb s3://property-management-frontend
-     aws s3 website s3://property-management-frontend --index-document index.html
-     
-     # Update API_URL in app.js
-     sed -i 's|http://localhost:8080/properties|http://your-backend-instance-public-ip:8080/properties|g' frontend/scripts/app.js
-     
-     # Upload files to S3
-     aws s3 sync frontend/ s3://property-management-frontend --acl public-read
-     ```
+![img_11.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_11.png)
 
-6. **Configure CORS (if needed)**
-   Add the following to your Spring Boot application:
-   ```java
-   @Configuration
-   public class WebConfig implements WebMvcConfigurer {
-       @Override
-       public void addCorsMappings(CorsRegistry registry) {
-           registry.addMapping("/**")
-               .allowedOrigins("*") // In production, restrict this to your frontend domain
-               .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-               .allowedHeaders("*");
-       }
-   }
-   ```
+![img_8.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_8.png)
 
-7. **Access the deployed application**
-   - Frontend: http://your-backend-instance-public-ip (if using Nginx)
-   - Backend API: http://your-backend-instance-public-ip:8080/properties
-
-### Docker Commands Reference
-
-#### MySQL Container
-```bash
-docker run --name mysqlcontainer -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=properties -e MYSQL_USER=samuel -e MYSQL_PASSWORD=samuelpass -p 3306:3306 -d mysql:latest
-```
-
-#### Backend Container
-```bash
-docker build -t property-backend .
-docker run -d -p 8080:8080 --name property-backend property-backend
-```
+5. **Access the deployed application**
+   - http://ec2-54-166-229-47.compute-1.amazonaws.com:8080/properties
+- - ESTO PUEDE CAMBIAR
 
 ### Monitoring and Maintenance
 
 1. **View container logs**
    ```bash
-   docker logs property-backend
+   docker logs propertiescontainer
    docker logs mysqlcontainer
    ```
 
 2. **Restart containers**
    ```bash
-   docker restart property-backend
+   docker restart propertiescontainer
    docker restart mysqlcontainer
    ```
 
 3. **Stop and remove containers**
    ```bash
-   docker stop property-backend && docker rm property-backend
+   docker stop propertiescontainer && docker rm propertiescontainer
    docker stop mysqlcontainer && docker rm mysqlcontainer
    ```
 
-****VIDEO - PRUEBAS DE FUNCIONAMIENTO DEL DESPLIEGE****
+Videos del funcionamiento
+-------
 
 
-![video.gif](src%2Fmain%2Fresources%2Fstatic%2Fvideo%2Fvideo.gif)
-
-
-**Para probar el servicio puedes usar las siguientes rutas de prueba**
 
 Pruebas
 -------
 
-Se han realizado pruebas unitarias para asegurar el correcto funcionamiento de cada componente. Las pruebas incluyen:
-
-*   **Pruebas de MicroServer**: Verifican que se cargen los componentes correctamente.
-
-![img_3.png](src/main/resources/static/img/img_3.png)
-
-*   **Pruebas de HttpServer**: Verifican que el servidor pueda iniciar y aceptar conexiones.
-
-![img_4.png](src/main/resources/static/img/img_4.png)
-
-*   **Pruebas de RequestHandler**: Aseguran que las solicitudes HTTP sean procesadas correctamente.
-
-![img_5.png](src/main/resources/static/img/img_5.png)
-
-*   **Pruebas de StaticFileHandler**: Comprueban que los archivos estáticos sean servidos adecuadamente.
-
-![img_6.png](src/main/resources/static/img/img_6.png)
-
-*   **Pruebas de ResponseHelper**: Validan que las respuestas HTTP sean construidas correctamente.
-
-![img_7.png](src/main/resources/static/img/img_7.png)
-
-Para ejecutar las pruebas, utiliza el siguiente comando:
-
-    mvn test
-
-![img_1.png](src/main/resources/static/img/img_2.png)
 
 Contribuciones
 --------------
