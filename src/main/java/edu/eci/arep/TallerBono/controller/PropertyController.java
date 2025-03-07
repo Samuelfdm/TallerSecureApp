@@ -2,10 +2,11 @@ package edu.eci.arep.TallerBono.controller;
 
 import edu.eci.arep.TallerBono.model.Property;
 import edu.eci.arep.TallerBono.service.PropertyService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/properties")
@@ -27,10 +28,11 @@ public class PropertyController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Property>> getProperties() {
-        List<Property> properties = propertyService.getProperties(); // Obtiene la lista de properties
+    public ResponseEntity<Page<Property>> getProperties(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "3") int size) {
+        Page<Property> properties = propertyService.getProperties(page, size); // Obtiene la lista de properties
         if (properties.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Si no hay properties, devuelve 204 No Content
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Si no hay properties, devuelve 404 Not Found
         }
         return new ResponseEntity<>(properties, HttpStatus.OK); // Devuelve la lista de properties con 200 OK
     }
@@ -61,5 +63,14 @@ public class PropertyController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED); // Si no actualizó la property, devuelve 204 No Content
         }
         return new ResponseEntity<>(property, HttpStatus.OK); //Devuelve la property actualizada con 200 OK
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<Property>> searchProperties(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size) {
+        Page<Property> properties = propertyService.searchProperties(query, PageRequest.of(page, size));
+        return new ResponseEntity<>(properties, HttpStatus.OK);
     }
 }

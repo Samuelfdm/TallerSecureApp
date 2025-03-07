@@ -3,10 +3,11 @@ package edu.eci.arep.TallerBono.service;
 import edu.eci.arep.TallerBono.model.Property;
 import edu.eci.arep.TallerBono.repository.PropertyPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import java.util.Optional;
 
 @Service
@@ -23,8 +24,9 @@ public class PropertyService {
         return propertyPersistence.save(property);
     }
 
-    public List<Property> getProperties() {
-        return propertyPersistence.findAll();
+    public Page<Property> getProperties(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return propertyPersistence.findAll(pageable);
     }
 
     public Property getProperty(Long propertyId) {
@@ -57,5 +59,9 @@ public class PropertyService {
         property.setSize(nuevoProperty.getSize());
         property.setDescription(nuevoProperty.getDescription());
         return propertyPersistence.save(property);
+    }
+
+    public Page<Property> searchProperties(String query, Pageable pageable) {
+        return propertyPersistence.findByAddressContainingOrDescriptionContaining(query, pageable);
     }
 }

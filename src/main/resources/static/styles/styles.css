@@ -1,0 +1,60 @@
+body {
+    font-family: Verdana, sans-serif;
+    margin: 20px;
+    background-color: gainsboro;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+#propertyForm button {
+    background: chartreuse;
+}
+
+#propertyList button {
+    background: darkorange;
+}
+
+input, button {
+    margin: 5px;
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+input:focus, button:focus, button:active {
+    border-color: mediumslateblue;
+}
+
+.property {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.pagination {
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 8px;
+    background-color: mediumslateblue;
+    border: 2px solid black;
+    border-radius: 8px;
+}
+
+.edit-form {
+    display: none;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
