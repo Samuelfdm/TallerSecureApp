@@ -188,6 +188,9 @@ La aplicación backend sigue una arquitectura en capas con clara separación de 
         - Backend: Permitir tráfico entrante en puertos 22 (SSH), 8080 (HTTP) y 80 (HTTP)
         - Base de datos: Permitir tráfico entrante en puertos 22 (SSH) y 3306 (MySQL) solo desde la IP del servidor backend
 
+![imagenes.gif](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimagenes.gif)
+![lanzar.gif](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Flanzar.gif)
+
 2. **Instalar Docker en ambas instancias EC2**
    ```bash
    sudo yum update -y
@@ -206,6 +209,8 @@ La aplicación backend sigue una arquitectura en capas con clara separación de 
 
 ![img_6.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_6.png)
 
+![video1.gif](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fvideo1.gif)
+
 4. **Desplegar el backend en la instancia EC2 de aplicación**
    ```bash
    # En la instancia EC2 de aplicación
@@ -220,6 +225,8 @@ La aplicación backend sigue una arquitectura en capas con clara separación de 
 ![img_11.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_11.png)
 
 ![img_8.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_8.png)
+
+![despliege.gif](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fdespliege.gif)
 
 5. **Acceder a la aplicación desplegada**
     - http://ec2-54-166-229-47.compute-1.amazonaws.com:8080/properties
@@ -248,7 +255,9 @@ La aplicación backend sigue una arquitectura en capas con clara separación de 
 Videos del funcionamiento
 -------
 
-![video1.gif](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fvideo1.gif)
+![funcionaremoto.gif](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Ffuncionaremoto.gif)
+
+![postman.gif](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fpostman.gif)
 
 Pruebas unitarias
 -------

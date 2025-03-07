@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/properties';
+const API_URL = 'http://ec2-54-157-197-193.compute-1.amazonaws.com:8080/properties';
 let currentPage = 0; // Página actual
 const pageSize = 3;  // Tamaño de la página
 let isSearchActive = false; // Indica si hay una búsqueda activa
