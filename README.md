@@ -1,62 +1,62 @@
-# Property Management CRUD System
+# Sistema CRUD de Gestión Inmobiliaria
 
-## Project Summary
+## Resumen del Proyecto
 
-This project is a comprehensive CRUD (Create, Read, Update, Delete) system designed for managing real estate properties. The application allows users to:
+Este proyecto es un sistema CRUD (Crear, Leer, Actualizar, Eliminar) completo diseñado para la gestión de propiedades inmobiliarias. La aplicación permite a los usuarios:
 
-- Create new property listings with details such as address, price, size, and description
-- View a paginated list of properties with 3 properties per page
-- View detailed information for each property listing
-- Update existing property information through an interactive form
-- Delete property listings that are no longer needed
-- Search properties by address or description
+- Crear nuevos listados de propiedades con detalles como dirección, precio, tamaño y descripción
+- Ver una lista paginada de propiedades con 3 propiedades por página
+- Ver información detallada de cada listado de propiedades
+- Actualizar la información de propiedades existentes a través de un formulario interactivo
+- Eliminar listados de propiedades que ya no son necesarios
+- Buscar propiedades por dirección o descripción
 
-The system is built using a modern three-tier architecture with a responsive web frontend, a Spring Boot REST API backend, and a MySQL database for persistent storage. All components are containerized using Docker and deployed on separate Amazon EC2 instances, ensuring scalability and separation of concerns.
+El sistema está construido utilizando una arquitectura moderna de tres capas con un frontend web responsivo, un backend API REST en Spring Boot y una base de datos MySQL para almacenamiento persistente. Todos los componentes están containerizados usando Docker y desplegados en instancias separadas de Amazon EC2, asegurando escalabilidad y separación de responsabilidades.
 
-## System Architecture
+## Arquitectura del Sistema
 
-The application follows a standard three-tier architecture:
+La aplicación sigue una arquitectura estándar de tres capas:
 
 ### Frontend
-- **Technologies**: HTML, CSS, JavaScript
-- **Features**:
-   - Responsive user interface with forms for property information entry
-   - Client-side validation for data integrity
-   - Fetch API for asynchronous communication with the backend
-   - Interactive property listings with options to view, update, and delete entries
-   - Pagination with configurable page size
-   - Search functionality for filtering properties
+- **Tecnologías**: HTML, CSS, JavaScript
+- **Características**:
+    - Interfaz de usuario responsiva con formularios para la entrada de información de propiedades
+    - Validación del lado del cliente para la integridad de datos
+    - API Fetch para comunicación asíncrona con el backend
+    - Listados interactivos de propiedades con opciones para ver, actualizar y eliminar entradas
+    - Paginación con tamaño de página configurable
+    - Funcionalidad de búsqueda para filtrar propiedades
 
 ### Backend
-- **Technologies**: Spring Boot, JPA/Hibernate
-- **Features**:
-   - RESTful API endpoints for all CRUD operations
-   - Data validation and error handling
-   - ORM mapping between Java objects and database entities
-   - Pagination support through Spring Data
-   - Search functionality through custom repository methods
-   - Containerized deployment using Docker
+- **Tecnologías**: Spring Boot, JPA/Hibernate
+- **Características**:
+    - Endpoints API RESTful para todas las operaciones CRUD
+    - Validación de datos y manejo de errores
+    - Mapeo ORM entre objetos Java y entidades de base de datos
+    - Soporte de paginación a través de Spring Data
+    - Funcionalidad de búsqueda mediante métodos personalizados de repositorio
+    - Despliegue containerizado usando Docker
 
-### Database
-- **Technologies**: MySQL
-- **Features**:
-   - Relational database with a properties table
-   - Persistent storage for all property data
-   - Containerized deployment using Docker
+### Base de Datos
+- **Tecnologías**: MySQL
+- **Características**:
+    - Base de datos relacional con una tabla de propiedades
+    - Almacenamiento persistente para todos los datos de propiedades
+    - Despliegue containerizado usando Docker
 
-### Interaction Flow
+### Flujo de Interacción
 
 ![img_4.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_4.png)
 
-1. **Client-Server Communication**: The frontend communicates with the backend through HTTP requests (GET, POST, PUT, DELETE) over port 8080.
-2. **Data Persistence**: The backend communicates with the MySQL database using JPA/Hibernate over TCP port 3306.
-3. **Service Isolation**: Each tier runs in its own Docker container on separate EC2 instances for improved security and scalability.
+1. **Comunicación Cliente-Servidor**: El frontend se comunica con el backend a través de peticiones HTTP (GET, POST, PUT, DELETE) sobre el puerto 8080.
+2. **Persistencia de Datos**: El backend se comunica con la base de datos MySQL usando JPA/Hibernate sobre el puerto TCP 3306.
+3. **Aislamiento de Servicios**: Cada capa se ejecuta en su propio contenedor Docker en instancias EC2 separadas para mejorar la seguridad y escalabilidad.
 
-## Class Design
+## Diseño de Clases
 
-The backend application follows a layered architecture with clear separation of concerns:
+La aplicación backend sigue una arquitectura en capas con clara separación de responsabilidades:
 
-### Class Diagram (Detailed)
+### Diagrama de Clases (Detallado)
 
 ```
 +------------------------+       +------------------------+       +------------------------+
@@ -107,70 +107,70 @@ The backend application follows a layered architecture with clear separation of 
 ### Property (Entidad): Clase principal que representa una propiedad inmobiliaria.
 
 - Atributos: id, address, price, size, description
-Anotada con @Entity y @Id, @GeneratedValue para el identificador
+- Anotada con @Entity y @Id, @GeneratedValue para el identificador
 
 ## Capa de persistencia
 
 ### PropertyPersistence (Interfaz): Define las operaciones de acceso a datos.
 
 - Métodos: findAll, findById, save, deleteById, findByAddressContainingOrDescriptionContaining
-Soporta paginación a través de parámetros Pageable
+- Soporta paginación a través de parámetros Pageable
 
 ### JpaPropertyRepository: Implementación JPA de la interfaz PropertyPersistence.
 
 - Extiende JpaRepository de Spring Data
-Usa consultas personalizadas con anotaciones @Query
-Anotada con @Repository("jpa")
+- Usa consultas personalizadas con anotaciones @Query
+- Anotada con @Repository("jpa")
 
 ### InMemoryPropertyRepository: Implementación alternativa en memoria para pruebas.
 
 - Mantiene una lista de propiedades y un contador de ID
-Anotada con @Repository("memory")
+- Anotada con @Repository("memory")
 
 ## Capa de servicio
 
 ### PropertyService: Contiene la lógica de negocio.
 
 - Depende de PropertyPersistence (inyección de dependencias)
-Proporciona métodos para todas las operaciones CRUD
-Anotada con @Service
+- Proporciona métodos para todas las operaciones CRUD
+- Anotada con @Service
 
 ## Capa de controlador
 
 ### PropertyController: Maneja las peticiones HTTP REST.
 
 - Depende de PropertyService (inyección de dependencias)
-Expone endpoints para todas las operaciones CRUD
-Incluye funcionalidad de búsqueda y paginación
-Anotada con @RestController
+- Expone endpoints para todas las operaciones CRUD
+- Incluye funcionalidad de búsqueda y paginación
+- Anotada con @RestController
 
-## Deployment Instructions
+## Instrucciones de Despliegue
 
-### Prerequisites
-- AWS Account with EC2 access
-- Docker installed on local machine and EC2 instances
-- Git installed on local machine
+### Prerrequisitos
+- Cuenta AWS con acceso a EC2
+- Docker instalado en la máquina local y en las instancias EC2
+- Git instalado en la máquina local
 
-### Local Setup and Testing
+### Configuración Local y Pruebas
 
-1. **Clone the repository**
+1. **Clonar el repositorio**
    ```bash
    git clone https://github.com/Samuelfdm/AREP_TALLER05_BONO.git
    cd TallerBono
    ```
 
-2. **Set up the database locally**
+2. **Configurar la base de datos localmente**
    ```bash
    docker run --name mysqlcontainer -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=properties -e MYSQL_USER=samuel -e MYSQL_PASSWORD=samuelpass -p 3306:3306 -d mysql:latest
    ```
 
-3. **Build and run the backend**
+3. **Compilar y ejecutar el backend**
    ```bash
    mvn spring-boot:run
    ```
 
-4. **Access the application**
-   - http://localhost:8080/
+4. **Acceder a la aplicación**
+    - http://localhost:8080/
 
 ![img.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg.png)
 
@@ -178,17 +178,17 @@ Anotada con @RestController
 
 ![img_3.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_3.png)
 
-### AWS Deployment
+### Despliegue en AWS
 
-1. **Create EC2 Instances**
-   - Create two EC2 instances using Amazon Linux 2 AMI:
-      - backendCrud (t2.micro)
-      - mysqlbdd (t2.micro)
-   - Configure security groups:
-      - Backend: Allow inbound traffic on ports 22 (SSH), 8080 (HTTP), and 80 (HTTP)
-      - Database: Allow inbound traffic on ports 22 (SSH) and 3306 (MySQL) from the backend server IP only
+1. **Crear Instancias EC2**
+    - Crear dos instancias EC2 usando Amazon Linux 2 AMI:
+        - backendCrud (t2.micro)
+        - mysqlbdd (t2.micro)
+    - Configurar grupos de seguridad:
+        - Backend: Permitir tráfico entrante en puertos 22 (SSH), 8080 (HTTP) y 80 (HTTP)
+        - Base de datos: Permitir tráfico entrante en puertos 22 (SSH) y 3306 (MySQL) solo desde la IP del servidor backend
 
-2. **Install Docker on both EC2 instances**
+2. **Instalar Docker en ambas instancias EC2**
    ```bash
    sudo yum update -y
    sudo yum install docker
@@ -196,20 +196,20 @@ Anotada con @RestController
    sudo usermod -a -G docker ec2-user
    exit
    ```
-   Log out and log back in to apply the group changes.
+   Cerrar sesión y volver a iniciar para aplicar los cambios de grupo.
 
-3. **Deploy the database container on the database EC2 instance**
+3. **Desplegar el contenedor de base de datos en la instancia EC2 de base de datos**
    ```bash
-   # On the database EC2 instance
+   # En la instancia EC2 de base de datos
    docker run --name mysqlcontainer -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=properties -e MYSQL_USER=samuel -e MYSQL_PASSWORD=samuelpass -p 3306:3306 -d mysql:latest
    ```
 
 ![img_6.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_6.png)
 
-4. **Deploy the backend on the application EC2 instance**
+4. **Desplegar el backend en la instancia EC2 de aplicación**
    ```bash
-   # On the application EC2 instance
-   # Clone your repository
+   # En la instancia EC2 de aplicación
+   # Clonar tu repositorio
    docker pull samuelfdm/tallermysqlrepo
    docker run -d -p 8080:8080 --name propertiescontainer samuelfdm/tallermysqlrepo
    ```
@@ -221,25 +221,25 @@ Anotada con @RestController
 
 ![img_8.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_8.png)
 
-5. **Access the deployed application**
-   - http://ec2-54-166-229-47.compute-1.amazonaws.com:8080/properties
+5. **Acceder a la aplicación desplegada**
+    - http://ec2-54-166-229-47.compute-1.amazonaws.com:8080/properties
 - - ESTO PUEDE CAMBIAR
 
-### Monitoring and Maintenance
+### Monitoreo y Mantenimiento
 
-1. **View container logs**
+1. **Ver logs de contenedores**
    ```bash
    docker logs propertiescontainer
    docker logs mysqlcontainer
    ```
 
-2. **Restart containers**
+2. **Reiniciar contenedores**
    ```bash
    docker restart propertiescontainer
    docker restart mysqlcontainer
    ```
 
-3. **Stop and remove containers**
+3. **Detener y eliminar contenedores**
    ```bash
    docker stop propertiescontainer && docker rm propertiescontainer
    docker stop mysqlcontainer && docker rm mysqlcontainer
@@ -263,25 +263,25 @@ Pruebas unitarias
 
 ### Configuración inicial:
 
-Uso de Mockito para simular el comportamiento del servicio
-Creación de datos de prueba en el método setUp()
+- Uso de Mockito para simular el comportamiento del servicio
+- Creación de datos de prueba en el método setUp()
 
 
 ### Casos probados:
 
-Creación de propiedades (éxito y fallo)
-Obtención de lista de propiedades (con y sin resultados)
-Obtención de una propiedad específica (existente y no existente)
-Eliminación de propiedades (éxito y fallo)
-Actualización de propiedades (éxito y fallo)
-Búsqueda de propiedades
+- Creación de propiedades (éxito y fallo)
+- Obtención de lista de propiedades (con y sin resultados)
+- Obtención de una propiedad específica (existente y no existente)
+- Eliminación de propiedades (éxito y fallo)
+- Actualización de propiedades (éxito y fallo)
+- Búsqueda de propiedades
 
 
 ### Verificaciones:
 
-Códigos de estado HTTP correctos
-Respuestas esperadas
-Llamadas a los métodos del servicio con los parámetros correctos
+- Códigos de estado HTTP correctos
+- Respuestas esperadas
+- Llamadas a los métodos del servicio con los parámetros correctos
 
 
 
@@ -289,18 +289,18 @@ Llamadas a los métodos del servicio con los parámetros correctos
 
 ### Configuración inicial:
 
-Uso de Mockito para simular el repositorio
-Creación de datos de prueba en el método setUp()
+- Uso de Mockito para simular el repositorio
+- Creación de datos de prueba en el método setUp()
 
 
 ### Casos probados:
 
-Creación de propiedades
-Obtención de lista de propiedades
-Obtención de una propiedad específica (existente y no existente)
-Eliminación de propiedades (éxito, ID nulo, no existente)
-Actualización de propiedades
-Búsqueda de propiedades
+- Creación de propiedades
+- Obtención de lista de propiedades
+- Obtención de una propiedad específica (existente y no existente)
+- Eliminación de propiedades (éxito, ID nulo, no existente)
+- Actualización de propiedades
+- Búsqueda de propiedades
 
 Contribuciones
 --------------
@@ -334,11 +334,11 @@ Si deseas contribuir a este proyecto, por favor sigue los siguientes pasos:
 
 * **Samuel Felipe Díaz Mamanche**
 
-See also the list of [contributors](https://github.com/Samuelfdm/TallerWebServer/contributors) who participated in this project.
+Vea también la lista de [contribuidores](https://github.com/Samuelfdm/TallerWebServer/contributors) que participaron en este proyecto.
 
 ## Licencia
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+Este proyecto está licenciado bajo la Licencia MIT - vea el archivo [LICENSE.md](LICENSE.md) para más detalles
 
 ## Agradecimientos
 
