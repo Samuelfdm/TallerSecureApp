@@ -1,172 +1,302 @@
-# Taller de de modularización con virtualización e Introducción a Docker
+# Property Management CRUD System
 
-El taller consiste en mejorar nuestro framework para hacerlo concurrente y que se pueda apagar de manera elegante. Una vez tengamos esta aplicación procederemos a construir un container de docker para la aplicación y lo desplegaremos en nuestra máquina local. Luego, crearemos un repositorio en DockerHub y subiremos la imagen al repositorio. Finalmente, crearemos una máquina virtual de en AWS, instalaremos Docker , y desplegaremos el contenedor que acabamos de crear.
-## Instalación
+## Project Summary
 
-Para instalar y ejecutar este proyecto, sigue los siguientes pasos:
+This project is a comprehensive CRUD (Create, Read, Update, Delete) system designed for managing real estate properties. The application allows users to:
 
-1. **Clona el repositorio:**:
+- Create new property listings with details such as address, price, size, and description
+- View a paginated list of properties with 3 properties per page
+- View detailed information for each property listing
+- Update existing property information through an interactive form
+- Delete property listings that are no longer needed
+- Search properties by address or description
+
+The system is built using a modern three-tier architecture with a responsive web frontend, a Spring Boot REST API backend, and a MySQL database for persistent storage. All components are containerized using Docker and deployed on separate Amazon EC2 instances, ensuring scalability and separation of concerns.
+
+## System Architecture
+
+The application follows a standard three-tier architecture:
+
+### Frontend
+- **Technologies**: HTML, CSS, JavaScript
+- **Features**:
+   - Responsive user interface with forms for property information entry
+   - Client-side validation for data integrity
+   - Fetch API for asynchronous communication with the backend
+   - Interactive property listings with options to view, update, and delete entries
+   - Pagination with configurable page size
+   - Search functionality for filtering properties
+
+### Backend
+- **Technologies**: Spring Boot, JPA/Hibernate
+- **Features**:
+   - RESTful API endpoints for all CRUD operations
+   - Data validation and error handling
+   - ORM mapping between Java objects and database entities
+   - Pagination support through Spring Data
+   - Search functionality through custom repository methods
+   - Containerized deployment using Docker
+
+### Database
+- **Technologies**: MySQL
+- **Features**:
+   - Relational database with a properties table
+   - Persistent storage for all property data
+   - Containerized deployment using Docker
+
+### Interaction Flow
+
+![img_4.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_4.png)
+
+1. **Client-Server Communication**: The frontend communicates with the backend through HTTP requests (GET, POST, PUT, DELETE) over port 8080.
+2. **Data Persistence**: The backend communicates with the MySQL database using JPA/Hibernate over TCP port 3306.
+3. **Service Isolation**: Each tier runs in its own Docker container on separate EC2 instances for improved security and scalability.
+
+## Class Design
+
+The backend application follows a layered architecture with clear separation of concerns:
+
+### Class Diagram (Detailed)
+
+```
++------------------------+       +------------------------+       +------------------------+
+|   PropertyController   |       |    PropertyService     |       |  PropertyPersistence   |
++------------------------+       +------------------------+       +------------------------+
+| - propertyService      |------>| - propertyPersistence  |------>| + findAll()            |
++------------------------+       +------------------------+       | + findById()           |
+| + createProperty()     |       | + create()             |       | + save()               |
+| + getProperties()      |       | + getProperties()      |       | + deleteById()         |
+| + getProperty()        |       | + getProperty()        |       | + findByAddress...     |
+| + deleteProperty()     |       | + deleteProperty()     |       +------------------------+
+| + updateProperty()     |       | + updateProperty()     |              ^        ^
+| + searchProperties()   |       | + searchProperties()   |              |        |
++------------------------+       +------------------------+              |        |
+                                                                         |        |
+                                                                         |        |
++-------------------------------------------+      +-------------------------------------------+
+|       JpaPropertyRepository               |      |     InMemoryPropertyRepository           |
++-------------------------------------------+      +-------------------------------------------+
+| + findAll()                               |      | - properties: List<Property>             |
+| + findByAddressContainingOrDescription... |      | - currentId: Long                        |
++-------------------------------------------+      | + findAll()                              |
+                                                   | + findById()                             |
+                                                   | + save()                                 |
+                                                   | + deleteById()                           |
+                                                   | + findByAddressContainingOrDescription...|
+                                                   +-------------------------------------------+
+                                
+                                        |
+                                        |
+                                        v
+                      +------------------------------------+
+                      |              Property              |
+                      +------------------------------------+
+                      | - id: Long                         |
+                      | - address: String                  |
+                      | - price: long                      |
+                      | - size: int                        |
+                      | - description: String              |
+                      +------------------------------------+
+                      | + getters/setters                  |
+                      | + toString()                       |
+                      +------------------------------------+
+```
+
+#### Modelo de dominio
+
+## Property (Entidad): Clase principal que representa una propiedad inmobiliaria.
+
+Atributos: id, address, price, size, description
+Anotada con @Entity y @Id, @GeneratedValue para el identificador
+
+### Capa de persistencia
+
+## PropertyPersistence (Interfaz): Define las operaciones de acceso a datos.
+
+Métodos: findAll, findById, save, deleteById, findByAddressContainingOrDescriptionContaining
+Soporta paginación a través de parámetros Pageable
+
+## JpaPropertyRepository: Implementación JPA de la interfaz PropertyPersistence.
+
+Extiende JpaRepository de Spring Data
+Usa consultas personalizadas con anotaciones @Query
+Anotada con @Repository("jpa")
+
+## InMemoryPropertyRepository: Implementación alternativa en memoria para pruebas.
+
+Mantiene una lista de propiedades y un contador de ID
+Anotada con @Repository("memory")
+
+### Capa de servicio
+
+## PropertyService: Contiene la lógica de negocio.
+
+Depende de PropertyPersistence (inyección de dependencias)
+Proporciona métodos para todas las operaciones CRUD
+Anotada con @Service
+
+### Capa de controlador
+
+## PropertyController: Maneja las peticiones HTTP REST.
+
+Depende de PropertyService (inyección de dependencias)
+Expone endpoints para todas las operaciones CRUD
+Incluye funcionalidad de búsqueda y paginación
+Anotada con @RestController
+
+## Deployment Instructions
+
+### Prerequisites
+- AWS Account with EC2 access
+- Docker installed on local machine and EC2 instances
+- Git installed on local machine
+
+### Local Setup and Testing
+
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/Samuelfdm/AREP_TALLER04_DOCKER.git
-   cd AREP_TALLER04_DOCKER
-
-2. **Compila y empaqueta el proyecto:**
-Asegúrate de tener Maven instalado y ejecuta:
-    ```bash
-    mvn clean package
-
-3. **Ejecuta el servidor:**
-Después de compililar y empaquetar el proyecto, ejecuta el servidor con:
-    ```bash
-    java -cp target/classes edu.escuelaing.app.MicroServer
-
-Ejecución
----------
-
-Una vez que el servidor esté en funcionamiento, puedes acceder a los recursos estáticos a través de tu navegador web. Por ejemplo:
-
-Ejemplos de Uso - RestControllers - GetMappings - RequestParams - StaticFiles
---------------
-
-**Ruta REST /greeting:**
-
-Accede a http://localhost:35000/greeting name toma el valor por defecto "World".
-
-Accede a http://localhost:35000/greeting?name=PRUEBA para asignar a la variable name el valor de PRUEBA
-
-**Ruta REST /hello:**
-
-Accede a http://localhost:35000/hello?name=YISUS para asignar a la variable name el valor de pedro
-
-**Ruta REST /pi:**
-
-Accede a http://localhost:35000/pi para mostrar el valor de PI
-
-**Ruta REST /e:**
-
-Accede a http://localhost:35000/e para mostrar el valor de EULER
-
-
-**Muestra de funcionamiento prueba.html:**
-
-![img.png](src/main/resources/static/img/img.png)
-
-*   **Página principal**: http://localhost:35000/static/prueba.html
-
-*   **Archivo JavaScript**: http://localhost:35000/static/javascript.js
-
-*   **Archivo de Texto**: http://localhost:35000/static/text.txt
-
-*   **Archivo CSS**: http://localhost:35000/static/style.css
-
-*   **Imágenes PNG**: http://localhost:35000/img/imagen1.png
-
-*   **Imágenes JPG**: http://localhost:35000/img/imagen2.jpg
-
-El servidor escucha en el puerto 35000 por defecto.
-
-Arquitectura
-------------
-
-El diseño del servidor sigue una arquitectura modular con las siguientes clases principales:
-
-MicroSpring es un framework ligero inspirado en Spring Boot que permite manejar solicitudes HTTP y la inyección de controladores mediante anotaciones personalizadas. 
-
-### **🏗️ Estructura del Proyecto**
-
-#### 📂 edu.escuelaing.app.annotations
-#### Contiene las anotaciones personalizadas:
-
-* **@RestController:** Marca una clase como un controlador de endpoints REST.
-* **@GetMapping:** Asocia un método con una ruta HTTP GET específica.
-* **@RequestParam:** Permite extraer parámetros de la URL en métodos controladores.
-
-#### 📂 edu.escuelaing.app.controller
-#### Contiene los controladores que manejan las solicitudes HTTP:
-
-* **GreetingController:** Define endpoints relacionados con saludos.
-* **MathController:** Proporciona endpoints para operaciones matemáticas.
-
-#### 📂 edu.escuelaing.app.server
-#### Módulo encargado del manejo de solicitudes HTTP y enrutamiento:
-
-* **HttpServer:** Inicia el servidor y escucha solicitudes.
-* **Request:** Representa una solicitud HTTP.
-* **Response:** Maneja la respuesta HTTP.
-* **Router:** Encargado de mapear rutas a métodos de controladores.
-* **RequestHandler:** Gestiona la ejecución de métodos anotados.
-* **StaticFileHandler:** Sirve archivos estáticos.
-
-#### 📂 resources
-
-Directorio destinado a archivos estáticos, como HTML, CSS o JavaScript.
-
-#### 📂 test
-
-Contiene pruebas unitarias y de integración del framework.
-
-### Diagrama de Flujo
-
-Cuando el usuario hace una solicitud HTTP a MicroSpring, el flujo de ejecución es el siguiente:
-
-1. El HttpServer recibe la solicitud y crea un objeto Request con los datos extraídos.
-2. El Router identifica la ruta y busca un controlador anotado con @RestController.
-3. El RequestHandler procesa la solicitud, extrayendo parámetros con @RequestParam.
-4. El método del controlador se ejecuta y devuelve una respuesta.
-5. El ResponseHelper genera la respuesta y la envía de vuelta al cliente.
-
-Concurrencia y apagado elegante
--------
-
-* Se registra un Shutdown Hook con Runtime.getRuntime().addShutdownHook().
-* Ahora, si el proceso es terminado desde fuera (Ctrl+C, kill, Docker stop, etc.), el servidor se detiene correctamente cerrando hilos, liberando recursos o guardando estados pendientes..
-
-![img_8.png](src/main/resources/static/img/img_8.png)
-
-* RequestHandler ahora implementa Runnable y sobreeescribe el método run() para manejar cada hilo de solicitud
-
-![img_9.png](src/main/resources/static/img/img_9.png)
-
-Docker y despliege en AWS
--------
-
-**Creamos la imagen docker y verificamos la lista de imagenes**
-
-![img_10.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_10.png)
-
-![img_11.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_11.png)
-
-**A partir de la imagen creada creamos una instancia de un contenedor docker**
-
-![img_12.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_12.png)
-
-**Creamos un repositorio en Docker Hub para poder subir la imagen que creamos**
-
-![img_13.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_13.png)
-
-![img_14.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_14.png)
-
-**Creamos la instancia de EC2**
-
-![img_15.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_15.png)
-
-![img_16.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_16.png)
-
-**Lanzamos la instancia**
-
-![img_17.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_17.png)
-
-**Antes de lanzarla hay que asegurarse de añadir en seguridad el grupo con los puertos que requerimos**
-
-![img_18.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_18.png)
-
-**Podemos usar ssh o la consola interna que nos ofrece AWS**
-
-![img_19.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_19.png)
-
-![img_20.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_20.png)
-
-![img_21.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_21.png)
+   git clone https://github.com/Samuelfdm/AREP_TALLER05_BONO.git
+   cd TallerBono
+   ```
+
+2. **Set up the database locally**
+   ```bash
+   docker run --name mysqlcontainer -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=properties -e MYSQL_USER=samuel -e MYSQL_PASSWORD=samuelpass -p 3306:3306 -d mysql:latest
+   ```
+
+3. **Build and run the backend**
+   ```bash
+   mvn spring-boot:run
+   ```
+
+4. **Access the application**
+   - http://localhost:8080/
+
+### AWS Deployment
+
+1. **Create EC2 Instances**
+   - Create two EC2 instances using Amazon Linux 2 AMI:
+      - property-backend-server (t2.micro)
+      - property-db-server (t2.micro)
+   - Configure security groups:
+      - Backend: Allow inbound traffic on ports 22 (SSH), 8080 (HTTP), and 80 (HTTP)
+      - Database: Allow inbound traffic on ports 22 (SSH) and 3306 (MySQL) from the backend server IP only
+
+2. **Install Docker on both EC2 instances**
+   ```bash
+   ssh -i "your-key.pem" ec2-user@your-instance-public-ip
+   sudo yum update -y
+   sudo amazon-linux-extras install docker -y
+   sudo service docker start
+   sudo usermod -a -G docker ec2-user
+   sudo systemctl enable docker
+   ```
+   Log out and log back in to apply the group changes.
+
+3. **Deploy the database container on the database EC2 instance**
+   ```bash
+   # On the database EC2 instance
+   docker run --name mysqlcontainer -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=properties -e MYSQL_USER=samuel -e MYSQL_PASSWORD=samuelpass -p 3306:3306 -d mysql:latest
+   ```
+
+4. **Deploy the backend on the application EC2 instance**
+   ```bash
+   # On the application EC2 instance
+   # Clone your repository
+   git clone https://github.com/your-username/property-management.git
+   cd property-management
+   
+   # Update the application.properties file with the correct database IP
+   sed -i 's/localhost/your-db-instance-private-ip/g' src/main/resources/application.properties
+   
+   # Build the application
+   ./mvnw clean package
+   
+   # Build and run the Docker container
+   docker build -t property-backend .
+   docker run -d -p 8080:8080 --name property-backend property-backend
+   ```
+
+5. **Deploy the frontend**
+   - Option 1: Use the backend EC2 instance to serve static files
+     ```bash
+     # On the backend EC2 instance
+     sudo amazon-linux-extras install nginx1 -y
+     sudo systemctl start nginx
+     sudo systemctl enable nginx
+     
+     # Copy frontend files to nginx
+     sudo mkdir -p /usr/share/nginx/html/property-management
+     sudo cp -r frontend/* /usr/share/nginx/html/property-management/
+     
+     # Update the API_URL in app.js to point to the backend
+     sudo sed -i 's|http://localhost:8080/properties|http://your-backend-instance-public-ip:8080/properties|g' /usr/share/nginx/html/property-management/scripts/app.js
+     ```
+
+   - Option 2: Use Amazon S3 for hosting
+     ```bash
+     # Configure S3 bucket for static website hosting
+     aws s3 mb s3://property-management-frontend
+     aws s3 website s3://property-management-frontend --index-document index.html
+     
+     # Update API_URL in app.js
+     sed -i 's|http://localhost:8080/properties|http://your-backend-instance-public-ip:8080/properties|g' frontend/scripts/app.js
+     
+     # Upload files to S3
+     aws s3 sync frontend/ s3://property-management-frontend --acl public-read
+     ```
+
+6. **Configure CORS (if needed)**
+   Add the following to your Spring Boot application:
+   ```java
+   @Configuration
+   public class WebConfig implements WebMvcConfigurer {
+       @Override
+       public void addCorsMappings(CorsRegistry registry) {
+           registry.addMapping("/**")
+               .allowedOrigins("*") // In production, restrict this to your frontend domain
+               .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+               .allowedHeaders("*");
+       }
+   }
+   ```
+
+7. **Access the deployed application**
+   - Frontend: http://your-backend-instance-public-ip (if using Nginx)
+   - Backend API: http://your-backend-instance-public-ip:8080/properties
+
+### Docker Commands Reference
+
+#### MySQL Container
+```bash
+docker run --name mysqlcontainer -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=properties -e MYSQL_USER=samuel -e MYSQL_PASSWORD=samuelpass -p 3306:3306 -d mysql:latest
+```
+
+#### Backend Container
+```bash
+docker build -t property-backend .
+docker run -d -p 8080:8080 --name property-backend property-backend
+```
+
+### Monitoring and Maintenance
+
+1. **View container logs**
+   ```bash
+   docker logs property-backend
+   docker logs mysqlcontainer
+   ```
+
+2. **Restart containers**
+   ```bash
+   docker restart property-backend
+   docker restart mysqlcontainer
+   ```
+
+3. **Stop and remove containers**
+   ```bash
+   docker stop property-backend && docker rm property-backend
+   docker stop mysqlcontainer && docker rm mysqlcontainer
+   ```
 
 ****VIDEO - PRUEBAS DE FUNCIONAMIENTO DEL DESPLIEGE****
 
@@ -175,17 +305,6 @@ Docker y despliege en AWS
 
 
 **Para probar el servicio puedes usar las siguientes rutas de prueba**
-
-* http://ec2-35-174-172-199.compute-1.amazonaws.com:35000/static/prueba.html
-* http://ec2-35-174-172-199.compute-1.amazonaws.com:35000/static/javascript.js
-* http://ec2-35-174-172-199.compute-1.amazonaws.com:35000/static/style.css
-* http://ec2-35-174-172-199.compute-1.amazonaws.com:35000/static/img/imagen1.png
-* http://ec2-35-174-172-199.compute-1.amazonaws.com:35000/static/img/imagen2.jpg
-* http://ec2-35-174-172-199.compute-1.amazonaws.com:35000/greeting?name=SAMUELL
-* http://ec2-35-174-172-199.compute-1.amazonaws.com:35000/greeting
-* http://ec2-35-174-172-199.compute-1.amazonaws.com:35000/pi
-* http://ec2-35-174-172-199.compute-1.amazonaws.com:35000/e
-
 
 Pruebas
 -------
