@@ -248,11 +248,59 @@ Anotada con @RestController
 Videos del funcionamiento
 -------
 
+![video1.gif](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fvideo1.gif)
 
-
-Pruebas
+Pruebas unitarias
 -------
+   ```bash
+   mvn test
+   ```
 
+![img_12.png](src%2Fmain%2Fresources%2Fstatic%2Fimg%2Fimg_12.png)
+
+## Explicación - pruebas unitarias
+## Para PropertyControllerTest:
+
+### Configuración inicial:
+
+Uso de Mockito para simular el comportamiento del servicio
+Creación de datos de prueba en el método setUp()
+
+
+### Casos probados:
+
+Creación de propiedades (éxito y fallo)
+Obtención de lista de propiedades (con y sin resultados)
+Obtención de una propiedad específica (existente y no existente)
+Eliminación de propiedades (éxito y fallo)
+Actualización de propiedades (éxito y fallo)
+Búsqueda de propiedades
+
+
+### Verificaciones:
+
+Códigos de estado HTTP correctos
+Respuestas esperadas
+Llamadas a los métodos del servicio con los parámetros correctos
+
+
+
+## Para PropertyServiceTest:
+
+### Configuración inicial:
+
+Uso de Mockito para simular el repositorio
+Creación de datos de prueba en el método setUp()
+
+
+### Casos probados:
+
+Creación de propiedades
+Obtención de lista de propiedades
+Obtención de una propiedad específica (existente y no existente)
+Eliminación de propiedades (éxito, ID nulo, no existente)
+Actualización de propiedades
+Búsqueda de propiedades
 
 Contribuciones
 --------------
