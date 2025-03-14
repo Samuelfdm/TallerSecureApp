@@ -58,3 +58,36 @@ input:focus, button:focus, button:active {
     opacity: 0.5;
     pointer-events: none;
 }
+
+.login-container, .register-container {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.login-container h2, .register-container h2 {
+    text-align: center;
+}
+
+.login-container form, .register-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container input, .register-container input {
+    margin-bottom: 10px;
+}
+
+.login-container button, .register-container button {
+    background-color: mediumslateblue;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.login-container button:hover, .register-container button:hover {
+    background-color: slateblue;
+}

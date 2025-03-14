@@ -2,7 +2,9 @@ FROM openjdk:21
 
 WORKDIR /usrapp/bin
 
-ENV PORT 8080
+EXPOSE 8443
+
+ENV PORT 8443
 
 COPY target/*.jar app.jar
 

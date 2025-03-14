@@ -1,4 +1,4 @@
-const API_URL = 'http://ec2-54-157-197-193.compute-1.amazonaws.com:8080/properties';
+const API_URL = 'https://localhost:8443/properties';
 let currentPage = 0; // Página actual
 const pageSize = 3;  // Tamaño de la página
 let isSearchActive = false; // Indica si hay una búsqueda activa
@@ -31,7 +31,9 @@ async function loadProperties(page) {
         ? `${API_URL}/search?query=${document.getElementById('searchQuery').value}&page=${page}&size=${pageSize}`
         : `${API_URL}?page=${page}&size=${pageSize}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        credentials: 'include'  // Incluir cookies de sesión
+    });
     const data = await response.json();
     const properties = data.content; // Propiedades de la página actual
     const totalPages = data.totalPages; // Número total de páginas

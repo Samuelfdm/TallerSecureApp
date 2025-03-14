@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>edu.eci.arep</groupId>
-	<artifactId>TallerBono</artifactId>
+	<artifactId>TallerSecureApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>TallerBono</name>
-	<description>Taller CRUD BONO</description>
+	<name>TallerSecureApp</name>
+	<description>Taller Secure App</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -75,6 +75,21 @@
 			<artifactId>junit-jupiter-api</artifactId>
 			<version>5.11.4</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>3.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+			<version>6.4.3</version>
 		</dependency>
 	</dependencies>
 

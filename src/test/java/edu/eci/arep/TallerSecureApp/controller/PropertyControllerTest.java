@@ -1,7 +1,7 @@
-package edu.eci.arep.TallerBono.controller;
+package edu.eci.arep.TallerSecureApp.controller;
 
-import edu.eci.arep.TallerBono.model.Property;
-import edu.eci.arep.TallerBono.service.PropertyService;
+import edu.eci.arep.TallerSecureApp.model.Property;
+import edu.eci.arep.TallerSecureApp.service.PropertyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

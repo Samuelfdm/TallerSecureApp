@@ -156,7 +156,7 @@ La aplicación backend sigue una arquitectura en capas con clara separación de 
 1. **Clonar el repositorio**
    ```bash
    git clone https://github.com/Samuelfdm/AREP_TALLER05_BONO.git
-   cd TallerBono
+   cd TallerSecureApp
    ```
 
 2. **Configurar la base de datos localmente**

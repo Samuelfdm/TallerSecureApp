@@ -1,8 +1,8 @@
-package edu.eci.arep.TallerBono.config;
+package edu.eci.arep.TallerSecureApp.config;
 
-import edu.eci.arep.TallerBono.repository.memory.InMemoryPropertyRepository;
-import edu.eci.arep.TallerBono.repository.jpa.JpaPropertyRepository;
-import edu.eci.arep.TallerBono.repository.PropertyPersistence;
+import edu.eci.arep.TallerSecureApp.repository.memory.InMemoryPropertyRepository;
+import edu.eci.arep.TallerSecureApp.repository.jpa.JpaPropertyRepository;
+import edu.eci.arep.TallerSecureApp.repository.PropertyPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

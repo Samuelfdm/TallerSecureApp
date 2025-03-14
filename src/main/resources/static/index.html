@@ -7,49 +7,46 @@
   <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-<h2>Add Property</h2>
-<form id="propertyForm">
-  <input type="text" id="address" placeholder="Address" required>
-  <input type="number" id="price" placeholder="Price" required>
-  <input type="number" id="size" placeholder="Size (m²)" required>
-  <input type="text" id="description" placeholder="Description" required>
-  <button type="submit">Add Property</button>
-</form>
-
-<h2>Property List</h2>
-<!-- Formulario de edición -->
-<div id="editFormContainer"></div>
-
-<!-- Campo de búsqueda -->
-<div>
-  <input type="text" id="searchQuery" placeholder="Search by address or description">
-  <button onclick="searchProperties()">Search</button>
-  <button onclick="clearSearch()">Clear</button>
+<h1>Property Management</h1>
+<div id="auth-buttons">
+  <button onclick="window.location.href='login.html'">Login</button>
+  <button onclick="window.location.href='register.html'">Register</button>
 </div>
-
-<!-- Lista de propiedades -->
-<div id="propertyList"></div>
-
-<!-- Controles de paginación -->
-<div class="pagination">
-  <button id="prevPage" onclick="loadPreviousPage()">Previous</button>
-  <span id="pageInfo"></span>
-  <button id="nextPage" onclick="loadNextPage()">Next</button>
-</div>
-
-<!-- Formulario de edición -->
-<div id="editFormTemplate" class="edit-form">
-  <h3>Edit Property</h3>
-  <form id="editPropertyForm">
-    <input type="text" id="editAddress" placeholder="Address" required>
-    <input type="number" id="editPrice" placeholder="Price" required>
-    <input type="number" id="editSize" placeholder="Size (m²)" required>
-    <input type="text" id="editDescription" placeholder="Description" required>
-    <button type="submit">Save Changes</button>
-    <button type="button" onclick="cancelEdit()">Cancel</button>
+<div id="property-management" style="display: none;">
+  <h2>Add Property</h2>
+  <form id="propertyForm">
+    <input type="text" id="address" placeholder="Address" required>
+    <input type="number" id="price" placeholder="Price" required>
+    <input type="number" id="size" placeholder="Size (m²)" required>
+    <input type="text" id="description" placeholder="Description" required>
+    <button type="submit">Add Property</button>
   </form>
+  <h2>Property List</h2>
+  <div id="editFormContainer"></div>
+  <div>
+    <input type="text" id="searchQuery" placeholder="Search by address or description">
+    <button onclick="searchProperties()">Search</button>
+    <button onclick="clearSearch()">Clear</button>
+  </div>
+  <div id="propertyList"></div>
+  <div class="pagination">
+    <button id="prevPage" onclick="loadPreviousPage()">Previous</button>
+    <span id="pageInfo"></span>
+    <button id="nextPage" onclick="loadNextPage()">Next</button>
+  </div>
+  <div id="editFormTemplate" class="edit-form">
+    <h3>Edit Property</h3>
+    <form id="editPropertyForm">
+      <input type="text" id="editAddress" placeholder="Address" required>
+      <input type="number" id="editPrice" placeholder="Price" required>
+      <input type="number" id="editSize" placeholder="Size (m²)" required>
+      <input type="text" id="editDescription" placeholder="Description" required>
+      <button type="submit">Save Changes</button>
+      <button type="button" onclick="cancelEdit()">Cancel</button>
+    </form>
+  </div>
 </div>
-
+<script src="scripts/auth.js"></script>
 <script src="scripts/app.js"></script>
 </body>
 </html>

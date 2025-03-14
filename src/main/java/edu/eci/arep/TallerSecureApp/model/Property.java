@@ -1,4 +1,4 @@
-package edu.eci.arep.TallerBono.model;
+package edu.eci.arep.TallerSecureApp.model;
 
 import jakarta.persistence.*;
 

@@ -1,7 +1,7 @@
-package edu.eci.arep.TallerBono.repository.jpa;
+package edu.eci.arep.TallerSecureApp.repository.jpa;
 
-import edu.eci.arep.TallerBono.model.Property;
-import edu.eci.arep.TallerBono.repository.PropertyPersistence;
+import edu.eci.arep.TallerSecureApp.model.Property;
+import edu.eci.arep.TallerSecureApp.repository.PropertyPersistence;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

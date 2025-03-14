@@ -1,4 +1,4 @@
-package edu.eci.arep.TallerBono.config;
+package edu.eci.arep.TallerSecureApp.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "edu.eci.arep.TallerBono.repository.jpa")
+@EnableJpaRepositories(basePackages = "edu.eci.arep.TallerSecureApp.repository.jpa")
 public class JpaConfig {
 
     @Bean

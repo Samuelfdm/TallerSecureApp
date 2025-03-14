@@ -1,7 +1,7 @@
-package edu.eci.arep.TallerBono.service;
+package edu.eci.arep.TallerSecureApp.service;
 
-import edu.eci.arep.TallerBono.model.Property;
-import edu.eci.arep.TallerBono.repository.PropertyPersistence;
+import edu.eci.arep.TallerSecureApp.model.Property;
+import edu.eci.arep.TallerSecureApp.repository.PropertyPersistence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
