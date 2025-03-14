@@ -20,8 +20,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public boolean auth(UserDto userDto){
+    public boolean auth(UserDto userDto) {
         User user = userRepository.findByEmail(userDto.getEmail());
+        if (user == null) {
+            return false;
+        }
         return BCrypt.checkpw(userDto.getPassword(), user.getPassword());
     }
 

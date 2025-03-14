@@ -1,20 +1,13 @@
 package edu.eci.arep.TallerSecureApp.config;
 
-import edu.eci.arep.TallerSecureApp.model.User;
-import edu.eci.arep.TallerSecureApp.repository.jpa.JpaUserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -23,12 +16,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Configura CORS
-                .csrf(AbstractHttpConfigurer::disable)  // Deshabilita CSRF
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); //Cualquier solicitud está permitida sin autenticación
-//                .authorizeHttpRequests(auth -> auth
-//                        .dispatcherTypeMatchers(HttpMethod.valueOf("/public/**")).permitAll()  // Rutas públicas
-//                        .anyRequest().authenticated());  // Todas las demás rutas requieren autenticación
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll());
         return http.build();
     }
 
@@ -43,20 +34,5 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);  // Aplica la configuración a todas las rutas
         return source;
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService(JpaUserRepository userRepository) {
-        return email -> {
-            User user = userRepository.findByEmail(email);
-            if (user == null) {
-                throw new UsernameNotFoundException("User not found");
-            }
-            return new org.springframework.security.core.userdetails.User(
-                    user.getEmail(),
-                    user.getPassword(),
-                    Collections.emptyList()
-            );
-        };
     }
 }

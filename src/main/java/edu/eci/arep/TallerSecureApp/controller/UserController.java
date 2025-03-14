@@ -4,6 +4,7 @@ import edu.eci.arep.TallerSecureApp.dto.UserDto;
 import edu.eci.arep.TallerSecureApp.model.User;
 import edu.eci.arep.TallerSecureApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
@@ -26,10 +27,11 @@ public class UserController {
 
     @PostMapping("/auth")
     public ResponseEntity<Void> authUser(@RequestBody UserDto userDto) {
-        if(userService.auth(userDto)){
+        if (userService.auth(userDto)) {
             return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.status(401).build();
     }
 
     @PostMapping
